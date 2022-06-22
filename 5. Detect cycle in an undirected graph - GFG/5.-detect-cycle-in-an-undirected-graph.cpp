@@ -6,39 +6,44 @@ using namespace std;
 class Solution {
   public:
     // Function to detect cycle in an undirected graph.
-    bool isCycle(int V, vector<int> adj[]) {
-        // Code here
-        bool visited [V];
-        for(int i=0; i<V; i++)
+   bool bfs(vector<int>adj[],int i,vector<bool>visited)
+    {
+        queue<pair<int,int>>q;
+        q.push({i,-1});
+        visited[i]=true;
+        while(!q.empty())
         {
-            visited[i] = false;
-        }
-        for(int i=0; i<V; i++)
-        {
-            if(visited[i] == false)
+            int x=q.front().first;
+            int par=q.front().second;
+            q.pop();
+            for(auto y:adj[x])
             {
-                if(DFSRec(adj, i, visited, -1) == true)
-                    return true;
+                if(!visited[y])
+                 {
+                  q.push({y,x});
+                     visited[y]=true;  
+                 }
+                 else if( y!=par)
+                 {
+                     return true;
+                 }
             }
+            
         }
         return false;
     }
-    bool DFSRec(vector<int> adj[], int s, bool visited[] ,int parent)
-    {
-        visited[s] = true;
-        
-        for(int x : adj[s])
-        {
-            if(visited[x] == false)
-            {
-                if(DFSRec(adj, x, visited, s) == true)
-                    return true;
-            }
-            else if(x != parent)
+     bool isCycle(int V, vector<int> adj[]) 
+     {
+       vector<bool>visited(V,false);
+       for(int i=0;i<V;i++)
+       {
+           if(!visited[i])
+           {
+               if(bfs(adj,i,visited))
                 return true;
-        }
-        
-        return false;
+           }
+       }
+       return false;
     }
 };
 
